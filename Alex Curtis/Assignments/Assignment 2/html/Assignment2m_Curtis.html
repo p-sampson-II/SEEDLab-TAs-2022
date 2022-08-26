@@ -1,0 +1,507 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Assignment 2</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-02-10"><meta name="DC.source" content="Assignment2m_Curtis.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Assignment 2</h1><!--introduction--><p>Assignment2_Curtis.mlx Alex Curtis    EENG350    2/9/22 This live script contains every exercise in assignment 2. I recomend running the whole script first to initialize the workspace. Once that's done, each part can be run separately.</p><p>If you'd like to open the Simulink models instead of loading them in the background, change open_system to open_system.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Motor Parameters</a></li></ul></div><h2 id="1">Motor Parameters</h2><p>The constants used in creating the motor model</p><pre class="codeinput">Ra = 1;     <span class="comment">% armature resistance   [Ohms]</span>
+Kt = 0.5;   <span class="comment">% motor torque constant [Nm/A]</span>
+Ke = 0.5;   <span class="comment">% back emf constant     [Vs/rad]</span>
+J = 0.05;   <span class="comment">% Load inertia          [Nm^2]</span>
+b = 0.5;    <span class="comment">% damping               [Nm/s]</span>
+</pre><p>This simulation applies a rectifed sinusoidal voltage to a DC motor model, with the output as the angular position in radians.</p><p>Open the block diagram so it appears in the documentation when published. <i>Make sure the block diagram is closed before running the publish function</i> Plot of Motor Output Baseline motor response</p><p><i>Requires motorsim.slx</i></p><pre class="codeinput">open_system(<span class="string">'motorsim'</span>)          <span class="comment">% Load the model</span>
+out1 = sim(<span class="string">'motorsim'</span>);
+figure                           <span class="comment">% Create output figure</span>
+plot(out1.simout)
+title(<span class="string">'motorsim output'</span>)
+ylabel(<span class="string">'Angular Position (rad)'</span>)
+</pre><img vspace="5" hspace="5" src="Assignment2m_Curtis_01.png" alt=""> <img vspace="5" hspace="5" src="Assignment2m_Curtis_02.png" alt=""> <p>The motor rotates in the positive direction, with some oscillations due to the varying input Plot of Motor Response with PWM Input Shows the effect of a continuous PWM input</p><p><i>Requires motorPWM.slx</i></p><pre class="codeinput">open_system(<span class="string">'motorPWM'</span>)         <span class="comment">% Load the model</span>
+PWMout = sim(<span class="string">'motorPWM'</span>);
+figure                          <span class="comment">% Create input figure</span>
+plot(PWMout.inputs)
+title(<span class="string">'motorPWM Inputs'</span>)
+ylabel(<span class="string">'Amplitude'</span>)
+figure                          <span class="comment">% Create output figure</span>
+plot(PWMout.outputs)
+title(<span class="string">'motorPWM Outputs'</span>)
+ylabel(<span class="string">'Amplitude'</span>)
+<span class="comment">% Plot of Motor Response with Quantized Input</span>
+<span class="comment">% Shows the effect of a quantized input</span>
+<span class="comment">%</span>
+<span class="comment">% _Requires motorQuantized.slx_</span>
+
+open_system(<span class="string">'motorQuantized'</span>)   <span class="comment">% Load the model</span>
+Qout = sim(<span class="string">'motorQuantized'</span>);
+figure                          <span class="comment">% Create input figure</span>
+plot(Qout.inputs)
+title(<span class="string">'motorQuantized Inputs'</span>)
+ylabel(<span class="string">'Amplitude'</span>)
+figure                          <span class="comment">% Create output figure</span>
+plot(Qout.outputs)
+title(<span class="string">'motorQuantized Outputs'</span>)
+ylabel(<span class="string">'Amplitude'</span>)
+</pre><img vspace="5" hspace="5" src="Assignment2m_Curtis_03.png" alt=""> <img vspace="5" hspace="5" src="Assignment2m_Curtis_04.png" alt=""> <img vspace="5" hspace="5" src="Assignment2m_Curtis_05.png" alt=""> <img vspace="5" hspace="5" src="Assignment2m_Curtis_06.png" alt=""> <p>A quantized input is an approximation of the continuous input, and although it requires fewer points, it isn't very useful. Finding the Transfer Function of the Motor Using slLinearizer and getIOTransfer, MATLAB will find the closed loop transfer function of the motor for me!</p><p><i>Requires motor.slx</i></p><p>motor is the "Motor" subsystem</p><pre class="codeinput">open_system(<span class="string">'motor'</span>);                       <span class="comment">% Load the model</span>
+sllin = slLinearizer(<span class="string">'motor'</span>);              <span class="comment">% Create new a slLinearizer model</span>
+addPoint(sllin,{<span class="string">'Va'</span>,<span class="string">'pos'</span>,<span class="string">'vel'</span>});         <span class="comment">% Label the reference input and block output</span>
+posTF = getIOTransfer(sllin,<span class="string">'Va'</span>,<span class="string">'pos'</span>);    <span class="comment">% Use getIOTransfer to find TF of Pos/Va</span>
+velTF = getIOTransfer(sllin,<span class="string">'Va'</span>,<span class="string">'vel'</span>);    <span class="comment">% Use getIOTransfer to find TF of Vel/Va</span>
+</pre><p>Turn the generated position transfer function into a coefficient array for use in Simulink.</p><pre class="codeinput">posTF = tf(posTF)                           <span class="comment">% Convert to a TF object</span>
+posNum = posTF.Numerator;                   <span class="comment">% Find the numerator coefficients</span>
+posNum = posNum{1};                         <span class="comment">% Convert the numerator to a the right form</span>
+posDen = posTF.Denominator;                 <span class="comment">% Find the denominator coefficients</span>
+posDen = posDen{1};                         <span class="comment">% Convert the denominator to a the right form</span>
+</pre><pre class="codeoutput">
+posTF =
+ 
+  From input "Va" to output "pos":
+      10
+  ----------
+  s^2 + 15 s
+ 
+Continuous-time transfer function.
+
+</pre><p>Turn the generated velocity transfer function into a coefficient array for use in Simulink.</p><pre class="codeinput">velTF = tf(velTF)                           <span class="comment">% Convert to a TF object</span>
+velNum = velTF.Numerator;                   <span class="comment">% Find the numerator coefficients</span>
+velNum = velNum{1};                         <span class="comment">% Convert the numerator to a the right form</span>
+velDen = velTF.Denominator;                 <span class="comment">% Find the denominator coefficients</span>
+velDen = velDen{1};                         <span class="comment">% Convert the denominator to a the right form</span>
+<span class="comment">% Plots of Motor Vs. Transfer Function - Position and Velocity</span>
+<span class="comment">% _Requires motorWithTF.slx_</span>
+<span class="comment">%</span>
+<span class="comment">% Compares the generated transfer function with the baseline motor response.</span>
+<span class="comment">%</span>
+<span class="comment">% (Red is the transfer function response, blue is the motor response)</span>
+
+open_system(<span class="string">'motorWithTF'</span>)                  <span class="comment">% Load the model</span>
+motorAndTFout = sim(<span class="string">'motorWithTF'</span>);
+figure                                      <span class="comment">% Create the position figure</span>
+plot(motorAndTFout.position)
+title(<span class="string">'motorWithTF Position'</span>)
+figure                                      <span class="comment">% Create the velocity figure</span>
+plot(motorAndTFout.velocity)
+title(<span class="string">'motorWithTF Velocity'</span>)
+<span class="comment">% Creating and Tuning a PI controller for Motor</span>
+<span class="comment">% Why open pidTuner in a new window when I can do it inline</span>
+
+<span class="comment">% Convert Response Time to Bandwidth</span>
+<span class="comment">% Bandwidth is equivalent to 2 divided by the Response Time</span>
+wc = 2/0.411919;
+
+<span class="comment">% Convert Transient Behavior to Phase Margin</span>
+<span class="comment">% Phase Margin is equivalent to the Transient Behavior multiplied by 100</span>
+PM = 100*0.659116;
+
+<span class="comment">% Define options for pidtune command</span>
+opts = pidtuneOptions(<span class="string">'PhaseMargin'</span>,PM);
+
+<span class="comment">% PID tuning algorithm for linear plant model</span>
+[CI,pidInfo] = pidtune(posTF,<span class="string">'PI'</span>,wc,opts);
+
+<span class="comment">% Clear Temporary Variables</span>
+clear <span class="string">wc</span> <span class="string">PM</span> <span class="string">opts</span>
+
+<span class="comment">% Get desired loop response</span>
+Response = getPIDLoopResponse(CI,posTF,<span class="string">'closed-loop'</span>);
+
+<span class="comment">% Plot the result</span>
+stepplot(Response)
+title(<span class="string">'Step Plot: Reference tracking'</span>)
+grid <span class="string">on</span>
+
+<span class="comment">% Display system response characteristics</span>
+disp(stepinfo(Response))
+
+<span class="comment">% Clear Temporary Variables</span>
+clear <span class="string">Response</span>
+Kp = CI.Kp          <span class="comment">% Displays the proportial coeficcient</span>
+Ki = CI.Ki          <span class="comment">% Displays the integral coeficcient</span>
+<span class="comment">% Plot of PI Controled Motor Vs. Transfer Function - Position</span>
+<span class="comment">% The two lines occupy the exact same space on the plot which indicates the</span>
+<span class="comment">% generated transfer function is correct.</span>
+
+open_system(<span class="string">'TFLoopPI'</span>)                     <span class="comment">% Load the PI controlled TF model</span>
+open_system(<span class="string">'motorLoopPI'</span>)                  <span class="comment">% Load the PI controlled motor model</span>
+tfOut = sim(<span class="string">'TFLoopPI'</span>);
+motorOut = sim(<span class="string">'motorLoopPI'</span>);
+figure                                      <span class="comment">% Create the position figure</span>
+plot(tfOut.position)
+hold <span class="string">on</span>
+plot(motorOut.position)
+hold <span class="string">off</span>
+title(<span class="string">'TF Vs Motor - PI'</span>)
+ylabel(<span class="string">'Amplitude (rad)'</span>)
+<span class="comment">% Tuning a PD Controller for Motor</span>
+
+<span class="comment">% Convert Response Time to Bandwidth</span>
+<span class="comment">% Bandwidth is equivalent to 2 divided by the Response Time</span>
+wc2 = 2/0.317841;
+
+<span class="comment">% Convert Transient Behavior to Phase Margin</span>
+<span class="comment">% Phase Margin is equivalent to the Transient Behavior multiplied by 100</span>
+PM2 = 100*0.855655;
+
+<span class="comment">% Define options for pidtune command</span>
+opts2 = pidtuneOptions(<span class="string">'PhaseMargin'</span>,PM2);
+
+<span class="comment">% PID tuning algorithm for linear plant model</span>
+[CD,pidInfo2] = pidtune(posTF,<span class="string">'PD'</span>,wc2,opts2);
+
+<span class="comment">% Clear Temporary Variables</span>
+clear <span class="string">wc2</span> <span class="string">PM2</span> <span class="string">opts2</span>
+
+<span class="comment">% Get desired loop response</span>
+Response2 = getPIDLoopResponse(CD,posTF,<span class="string">'closed-loop'</span>);
+
+<span class="comment">% Plot the result</span>
+stepplot(Response2)
+title(<span class="string">'Step Plot: Reference tracking'</span>)
+grid <span class="string">on</span>
+
+<span class="comment">% Display system response characteristics</span>
+disp(stepinfo(Response2))
+
+<span class="comment">% Clear Temporary Variables</span>
+clear <span class="string">Response2</span>
+Kp = CD.Kp          <span class="comment">% Displays the proportial coeficcient</span>
+Kd = CD.Kd          <span class="comment">% Displays the derivative coeficcient</span>
+<span class="comment">% Plot of PD Controlled Motor Vs. Transfer Function - Position</span>
+
+open_system(<span class="string">'TFLoopPD'</span>)
+open_system(<span class="string">'motorLoopPD'</span>)
+tfOut = sim(<span class="string">'TFLoopPD'</span>);
+motorOut = sim(<span class="string">'motorLoopPD'</span>);
+figure
+plot(tfOut.position)
+hold <span class="string">on</span>
+plot(motorOut.position)
+hold <span class="string">off</span>
+title(<span class="string">'TF Vs Motor - PD'</span>)
+</pre><pre class="codeoutput">
+velTF =
+ 
+  From input "Va" to output "vel":
+    10
+  ------
+  s + 15
+ 
+Continuous-time transfer function.
+
+         RiseTime: 0.2675
+    TransientTime: 3.3361
+     SettlingTime: 3.3361
+      SettlingMin: 0.9096
+      SettlingMax: 1.0967
+        Overshoot: 9.6683
+       Undershoot: 0
+             Peak: 1.0967
+         PeakTime: 0.6839
+
+
+Kp =
+
+    7.6109
+
+
+Ki =
+
+    3.9833
+
+         RiseTime: 0.3200
+    TransientTime: 0.5478
+     SettlingTime: 0.5478
+      SettlingMin: 0.9021
+      SettlingMax: 0.9993
+        Overshoot: 0
+       Undershoot: 0
+             Peak: 0.9993
+         PeakTime: 0.9652
+
+
+Kp =
+
+    9.7166
+
+
+Kd =
+
+    0.5114
+
+</pre><img vspace="5" hspace="5" src="Assignment2m_Curtis_07.png" alt=""> <img vspace="5" hspace="5" src="Assignment2m_Curtis_08.png" alt=""> <img vspace="5" hspace="5" src="Assignment2m_Curtis_09.png" alt=""> <img vspace="5" hspace="5" src="Assignment2m_Curtis_10.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Assignment 2
+% Assignment2_Curtis.mlx
+% Alex Curtis    EENG350    2/9/22
+% This live script contains every exercise in assignment 2. I recomend running 
+% the whole script first to initialize the workspace. Once that's done, each part 
+% can be run separately.
+% 
+% If you'd like to open the Simulink models instead of loading them in the background, 
+% change open_system to open_system.
+%% Motor Parameters
+% The constants used in creating the motor model
+
+Ra = 1;     % armature resistance   [Ohms]
+Kt = 0.5;   % motor torque constant [Nm/A]
+Ke = 0.5;   % back emf constant     [Vs/rad]
+J = 0.05;   % Load inertia          [Nm^2]
+b = 0.5;    % damping               [Nm/s]
+%% 
+% This simulation applies a rectifed sinusoidal voltage to a DC motor model, 
+% with the output as the angular position in radians.
+% 
+% Open the block diagram so it appears in the documentation when published. 
+% _Make sure the block diagram is closed before running the publish function_
+% Plot of Motor Output
+% Baseline motor response
+% 
+% _Requires motorsim.slx_
+
+open_system('motorsim')          % Load the model
+out1 = sim('motorsim');
+figure                           % Create output figure
+plot(out1.simout)
+title('motorsim output')
+ylabel('Angular Position (rad)')
+%% 
+% The motor rotates in the positive direction, with some oscillations due to 
+% the varying input
+% Plot of Motor Response with PWM Input
+% Shows the effect of a continuous PWM input
+% 
+% _Requires motorPWM.slx_
+
+open_system('motorPWM')         % Load the model 
+PWMout = sim('motorPWM');
+figure                          % Create input figure
+plot(PWMout.inputs)
+title('motorPWM Inputs')
+ylabel('Amplitude')
+figure                          % Create output figure
+plot(PWMout.outputs)
+title('motorPWM Outputs')
+ylabel('Amplitude')
+% Plot of Motor Response with Quantized Input
+% Shows the effect of a quantized input
+% 
+% _Requires motorQuantized.slx_
+
+open_system('motorQuantized')   % Load the model
+Qout = sim('motorQuantized');
+figure                          % Create input figure
+plot(Qout.inputs)
+title('motorQuantized Inputs')
+ylabel('Amplitude')
+figure                          % Create output figure
+plot(Qout.outputs)
+title('motorQuantized Outputs')
+ylabel('Amplitude')
+%% 
+% A quantized input is an approximation of the continuous input, and although 
+% it requires fewer points, it isn't very useful.
+% Finding the Transfer Function of the Motor
+% Using slLinearizer and getIOTransfer, MATLAB will find the closed loop transfer 
+% function of the motor for me!
+% 
+% _Requires motor.slx_
+% 
+% motor is the "Motor" subsystem
+
+open_system('motor');                       % Load the model
+sllin = slLinearizer('motor');              % Create new a slLinearizer model
+addPoint(sllin,{'Va','pos','vel'});         % Label the reference input and block output
+posTF = getIOTransfer(sllin,'Va','pos');    % Use getIOTransfer to find TF of Pos/Va
+velTF = getIOTransfer(sllin,'Va','vel');    % Use getIOTransfer to find TF of Vel/Va
+%% 
+% Turn the generated position transfer function into a coefficient array for 
+% use in Simulink.
+
+posTF = tf(posTF)                           % Convert to a TF object
+posNum = posTF.Numerator;                   % Find the numerator coefficients
+posNum = posNum{1};                         % Convert the numerator to a the right form
+posDen = posTF.Denominator;                 % Find the denominator coefficients
+posDen = posDen{1};                         % Convert the denominator to a the right form
+%% 
+% Turn the generated velocity transfer function into a coefficient array for 
+% use in Simulink.
+
+velTF = tf(velTF)                           % Convert to a TF object
+velNum = velTF.Numerator;                   % Find the numerator coefficients
+velNum = velNum{1};                         % Convert the numerator to a the right form
+velDen = velTF.Denominator;                 % Find the denominator coefficients
+velDen = velDen{1};                         % Convert the denominator to a the right form
+% Plots of Motor Vs. Transfer Function - Position and Velocity
+% _Requires motorWithTF.slx_
+% 
+% Compares the generated transfer function with the baseline motor response.
+% 
+% (Red is the transfer function response, blue is the motor response)
+
+open_system('motorWithTF')                  % Load the model
+motorAndTFout = sim('motorWithTF');
+figure                                      % Create the position figure 
+plot(motorAndTFout.position)
+title('motorWithTF Position')
+figure                                      % Create the velocity figure
+plot(motorAndTFout.velocity)
+title('motorWithTF Velocity')
+% Creating and Tuning a PI controller for Motor
+% Why open pidTuner in a new window when I can do it inline
+
+% Convert Response Time to Bandwidth
+% Bandwidth is equivalent to 2 divided by the Response Time
+wc = 2/0.411919;
+
+% Convert Transient Behavior to Phase Margin
+% Phase Margin is equivalent to the Transient Behavior multiplied by 100
+PM = 100*0.659116;
+
+% Define options for pidtune command
+opts = pidtuneOptions('PhaseMargin',PM);
+
+% PID tuning algorithm for linear plant model
+[CI,pidInfo] = pidtune(posTF,'PI',wc,opts);
+
+% Clear Temporary Variables
+clear wc PM opts
+
+% Get desired loop response
+Response = getPIDLoopResponse(CI,posTF,'closed-loop');
+
+% Plot the result
+stepplot(Response)
+title('Step Plot: Reference tracking')
+grid on
+
+% Display system response characteristics
+disp(stepinfo(Response))
+
+% Clear Temporary Variables
+clear Response
+Kp = CI.Kp          % Displays the proportial coeficcient
+Ki = CI.Ki          % Displays the integral coeficcient
+% Plot of PI Controled Motor Vs. Transfer Function - Position
+% The two lines occupy the exact same space on the plot which indicates the 
+% generated transfer function is correct.
+
+open_system('TFLoopPI')                     % Load the PI controlled TF model
+open_system('motorLoopPI')                  % Load the PI controlled motor model
+tfOut = sim('TFLoopPI');
+motorOut = sim('motorLoopPI');
+figure                                      % Create the position figure
+plot(tfOut.position)
+hold on
+plot(motorOut.position)
+hold off
+title('TF Vs Motor - PI')
+ylabel('Amplitude (rad)')
+% Tuning a PD Controller for Motor
+
+% Convert Response Time to Bandwidth
+% Bandwidth is equivalent to 2 divided by the Response Time
+wc2 = 2/0.317841;
+
+% Convert Transient Behavior to Phase Margin
+% Phase Margin is equivalent to the Transient Behavior multiplied by 100
+PM2 = 100*0.855655;
+
+% Define options for pidtune command
+opts2 = pidtuneOptions('PhaseMargin',PM2);
+
+% PID tuning algorithm for linear plant model
+[CD,pidInfo2] = pidtune(posTF,'PD',wc2,opts2);
+
+% Clear Temporary Variables
+clear wc2 PM2 opts2
+
+% Get desired loop response
+Response2 = getPIDLoopResponse(CD,posTF,'closed-loop');
+
+% Plot the result
+stepplot(Response2)
+title('Step Plot: Reference tracking')
+grid on
+
+% Display system response characteristics
+disp(stepinfo(Response2))
+
+% Clear Temporary Variables
+clear Response2
+Kp = CD.Kp          % Displays the proportial coeficcient
+Kd = CD.Kd          % Displays the derivative coeficcient
+% Plot of PD Controlled Motor Vs. Transfer Function - Position
+
+open_system('TFLoopPD')
+open_system('motorLoopPD')
+tfOut = sim('TFLoopPD');
+motorOut = sim('motorLoopPD');
+figure
+plot(tfOut.position)
+hold on
+plot(motorOut.position)
+hold off
+title('TF Vs Motor - PD')
+##### SOURCE END #####
+--></body></html>
